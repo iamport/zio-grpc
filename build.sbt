@@ -13,14 +13,27 @@ ThisBuild / resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 
 ThisBuild / versionScheme := Some("early-semver")
 
-publish / skip := true
+ThisBuild / resolvers += "GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc"
 
-sonatypeProfileName := "com.thesamet"
+ThisBuild / credentials ++= Seq(
+  Credentials(
+    "GitHub Package Registry",
+    "maven.pkg.github.com",
+    scala.sys.env("GITHUB_ACTOR"),
+    scala.sys.env("GITHUB_TOKEN")
+  )
+)
+
+publishTo := Some("GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc")
+
+publish / skip := true
 
 inThisBuild(
   List(
     organization := "com.thesamet.scalapb.zio-grpc",
     homepage     := Some(url("https://github.com/scalapb/zio-grpc")),
+    organization := "finance.chai",
+    homepage     := Some(url("https://github.com/iamport/zio-grpc")),
     licenses     := List(
       "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")
     ),
