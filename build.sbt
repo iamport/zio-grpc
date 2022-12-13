@@ -8,16 +8,25 @@ val Scala212 = "2.12.15"
 
 val ScalaVersions = Seq(Scala212, Scala213)
 
-ThisBuild / resolvers += Resolver.sonatypeRepo("snapshots")
+ThisBuild / resolvers += "GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc"
+
+ThisBuild / credentials ++= Seq(
+  Credentials(
+    "GitHub Package Registry",
+    "maven.pkg.github.com",
+    scala.sys.env("GITHUB_ACTOR"),
+    scala.sys.env("GITHUB_TOKEN")
+  )
+)
+
+publishTo := Some("GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc")
 
 publish / skip := true
 
-sonatypeProfileName := "com.thesamet"
-
 inThisBuild(
   List(
-    organization := "com.thesamet.scalapb.zio-grpc",
-    homepage := Some(url("https://github.com/scalapb/zio-grpc")),
+    organization := "finance.chai",
+    homepage := Some(url("https://github.com/iamport/zio-grpc")),
     licenses := List(
       "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")
     ),
