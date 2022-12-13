@@ -8,19 +8,19 @@ val Scala212 = "2.12.15"
 
 val ScalaVersions = Seq(Scala212, Scala213)
 
-ThisBuild / resolvers += "GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc"
-
-ThisBuild / credentials ++= Seq(
-  Credentials(
-    "GitHub Package Registry",
-    "maven.pkg.github.com",
-    scala.sys.env("GITHUB_ACTOR"),
-    scala.sys.env("GITHUB_TOKEN")
-  )
-)
-
-ThisBuild / publishTo := Some(
-  "GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc"
+val commonPublishSettings = Seq(
+  credentials ++= Seq(
+    Credentials(
+      "GitHub Package Registry",
+      "maven.pkg.github.com",
+      scala.sys.env("GITHUB_ACTOR"),
+      scala.sys.env("GITHUB_TOKEN")
+    )
+  ),
+  publishTo := Some(
+    "GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc"
+  ),
+  resolvers += "GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc"
 )
 
 publish / skip := true
@@ -56,6 +56,7 @@ lazy val core = projectMatrix
       "dev.zio" %%% "zio-test-sbt" % Version.zio % "test"
     )
   )
+  .settings(commonPublishSettings)
   .jvmPlatform(
     ScalaVersions,
     Seq(
@@ -91,6 +92,7 @@ lazy val codeGen = projectMatrix
       "com.thesamet.scalapb" %% "compilerplugin" % scalapb.compiler.Version.scalapbVersion
     )
   )
+  .settings(commonPublishSettings)
   .jvmPlatform(scalaVersions = ScalaVersions)
 
 lazy val codeGenJVM212 = codeGen.jvm(Scala212)
@@ -106,6 +108,7 @@ lazy val protocGenZio = protocGenProject("protoc-gen-zio", codeGenJVM212)
         (assembly / assemblyMergeStrategy).value.apply(x)
     }
   )
+  .settings(commonPublishSettings)
 
 lazy val e2e =
   projectMatrix
