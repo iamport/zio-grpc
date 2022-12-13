@@ -19,7 +19,9 @@ ThisBuild / credentials ++= Seq(
   )
 )
 
-publishTo := Some("GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc")
+ThisBuild / publishTo := Some(
+  "GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc"
+)
 
 publish / skip := true
 
