@@ -33,9 +33,7 @@ publish / skip := true
 inThisBuild(
   List(
     organization := "com.thesamet.scalapb.zio-grpc",
-    homepage     := Some(url("https://github.com/scalapb/zio-grpc")),
-    organization := "finance.chai",
-    homepage     := Some(url("https://github.com/iamport/zio-grpc")),
+    homepage     := Some(url("https://github.com/portne/zio-grpc")),
     licenses     := List(
       "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")
     ),
