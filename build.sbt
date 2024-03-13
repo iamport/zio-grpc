@@ -23,9 +23,9 @@ val commonPublishSettings = Seq(
     )
   ),
   publishTo := Some(
-    "GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc"
+    "GitHub Package Registry (portone-io/zio-grpc)" at "https://maven.pkg.github.com/portone-io/zio-grpc"
   ),
-  resolvers += "GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc"
+  resolvers += "GitHub Package Registry (portone-io/zio-grpc)" at "https://maven.pkg.github.com/portone-io/zio-grpc"
 )
 
 publish / skip := true
@@ -61,7 +61,7 @@ lazy val core = projectMatrix
       "dev.zio" %%% "zio-test-sbt" % Version.zio % "test"
     )
   )
-  .settings(commonPublishSettings)
+//  .settings(commonPublishSettings)
   .jvmPlatform(
     ScalaVersions,
     Seq(
@@ -97,7 +97,7 @@ lazy val codeGen = projectMatrix
       "com.thesamet.scalapb" %% "compilerplugin" % scalapb.compiler.Version.scalapbVersion
     )
   )
-  .settings(commonPublishSettings)
+//  .settings(commonPublishSettings)
   .jvmPlatform(scalaVersions = ScalaVersions)
 
 lazy val codeGenJVM212 = codeGen.jvm(Scala212)
@@ -113,7 +113,7 @@ lazy val protocGenZio = protocGenProject("protoc-gen-zio", codeGenJVM212)
         (assembly / assemblyMergeStrategy).value.apply(x)
     }
   )
-  .settings(commonPublishSettings)
+//  .settings(commonPublishSettings)
 
 lazy val e2eProtos =
   projectMatrix

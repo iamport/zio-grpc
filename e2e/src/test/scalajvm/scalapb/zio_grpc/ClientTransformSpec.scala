@@ -18,8 +18,10 @@ object ClientTransformSpec extends ZIOSpecDefault {
   def run(transform: ClientTransform): ZIO[Any, StatusException, ClientCallContext] =
     for {
       metadata <- SafeMetadata.make
-      context  <-
-        transform.effect(ZIO.succeed(_))(ClientCallContext(TestServiceGrpc.METHOD_UNARY, CallOptions.DEFAULT, metadata))
+      context  <- transform.effect((_: Any, ctx) => ZIO.succeed(ctx))(
+                    (),
+                    ClientCallContext(TestServiceGrpc.METHOD_UNARY, CallOptions.DEFAULT, metadata)
+                  )
     } yield context
 
   def spec = suite("ClientTransformSpec")(

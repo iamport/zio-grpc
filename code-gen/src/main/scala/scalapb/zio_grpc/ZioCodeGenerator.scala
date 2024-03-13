@@ -233,61 +233,15 @@ class ZioFilePrinter(
       val delegate = s"self.${method.name}"
       val newImpl  = method.streamType match {
         case StreamType.Unary | StreamType.ClientStreaming         =>
-          s"f.effect($delegate(request, _))(context)"
+          s"f.effect((req, ctx) => $delegate(req, ctx))(request, context)"
         case StreamType.ServerStreaming | StreamType.Bidirectional =>
-          s"f.stream($delegate(request, _))(context)"
+          s"f.stream((req, ctx) => $delegate(req, ctx))(request, context)"
       }
       fp.add(
         methodSignature(
           method,
           contextType = Some("Context1"),
           errorType = Some("Error1")
-        ) + " = " + newImpl
-      )
-    }
-
-    def printClientWithResponseMetadataTransform(
-        fp: FunctionalPrinter,
-        method: MethodDescriptor
-    ): FunctionalPrinter = {
-      val delegate = s"self.${method.name}"
-      val newImpl  = method.streamType match {
-        case StreamType.Unary           =>
-          s"f.effect($delegate(request))"
-        case StreamType.ServerStreaming =>
-          s"f.stream($delegate(request))"
-        case StreamType.ClientStreaming =>
-          s"f.effect($delegate(request))"
-        case StreamType.Bidirectional   =>
-          s"f.stream($delegate(request))"
-      }
-      fp.add(
-        clientWithResponseMetadataSignature(
-          method,
-          "Any"
-        ) + " = " + newImpl
-      )
-    }
-
-    def printClientTransform(
-        fp: FunctionalPrinter,
-        method: MethodDescriptor
-    ): FunctionalPrinter = {
-      val delegate = s"self.${method.name}"
-      val newImpl  = method.streamType match {
-        case StreamType.Unary           =>
-          s"f.effect($delegate(request))"
-        case StreamType.ServerStreaming =>
-          s"f.stream($delegate(request))"
-        case StreamType.ClientStreaming =>
-          s"f.effect($delegate(request))"
-        case StreamType.Bidirectional   =>
-          s"f.stream($delegate(request))"
-      }
-      fp.add(
-        clientMethodSignature(
-          method,
-          contextType = "Any"
         ) + " = " + newImpl
       )
     }
@@ -622,6 +576,9 @@ class ZioFilePrinter(
         case StreamType.ServerStreaming | StreamType.Bidirectional =>
           s"zio.stream.ZStream.fromZIO($SafeMetadata.make)"
       }
+
+      val reqType = methodInType(method, StatusException)
+
       fp.add(
         clientWithResponseMetadataSignature(
           method,
@@ -630,21 +587,21 @@ class ZioFilePrinter(
       ).indent
         .add(s"$makeMetadata.flatMap { metadata =>")
         .indented(
-          _.add(s"transforms.$transformMethod { context => ")
+          _.add(s"transforms.$transformMethod { (req: $reqType, ctx) => ")
             .indented(
               _.add(
                 s"$clientCall("
               )
                 .indented(
                   _.add(s"channel,")
-                    .add(s"context.method.asInstanceOf[$methodDescriptor[$Req, $Res]],")
-                    .add("context.options,")
-                    .add("context.metadata,")
-                    .add("request")
+                    .add(s"ctx.method.asInstanceOf[$methodDescriptor[$Req, $Res]],")
+                    .add("ctx.options,")
+                    .add("ctx.metadata,")
+                    .add("req")
                 )
                 .add(")")
             )
-            .add(s"}($ClientCallContext(${method.grpcDescriptor.fullName}, $CallOptions.DEFAULT, metadata))")
+            .add(s"}(request, $ClientCallContext(${method.grpcDescriptor.fullName}, $CallOptions.DEFAULT, metadata))")
         )
         .add("}")
         .outdent
