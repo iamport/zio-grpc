@@ -18,8 +18,8 @@ val commonPublishSettings = Seq(
     Credentials(
       "GitHub Package Registry",
       "maven.pkg.github.com",
-      scala.sys.env.get("PACKAGE_GITHUB_TOKEN").fold(scala.sys.env("CHAI_GPR_USERNAME"))(_ => "iamport-github"),
-      scala.sys.env.getOrElse("PACKAGE_GITHUB_TOKEN", scala.sys.env("CHAI_GPR_TOKEN"))
+      scala.sys.env.getOrElse("GITHUB_ACTOR", ""),
+      scala.sys.env.getOrElse("GITHUB_TOKEN", "")
     )
   ),
   publishTo := Some(
@@ -61,7 +61,7 @@ lazy val core = projectMatrix
       "dev.zio" %%% "zio-test-sbt" % Version.zio % "test"
     )
   )
-//  .settings(commonPublishSettings)
+  .settings(commonPublishSettings)
   .jvmPlatform(
     ScalaVersions,
     Seq(
@@ -97,7 +97,7 @@ lazy val codeGen = projectMatrix
       "com.thesamet.scalapb" %% "compilerplugin" % scalapb.compiler.Version.scalapbVersion
     )
   )
-//  .settings(commonPublishSettings)
+  .settings(commonPublishSettings)
   .jvmPlatform(scalaVersions = ScalaVersions)
 
 lazy val codeGenJVM212 = codeGen.jvm(Scala212)
@@ -113,7 +113,7 @@ lazy val protocGenZio = protocGenProject("protoc-gen-zio", codeGenJVM212)
         (assembly / assemblyMergeStrategy).value.apply(x)
     }
   )
-//  .settings(commonPublishSettings)
+  .settings(commonPublishSettings)
 
 lazy val e2eProtos =
   projectMatrix
