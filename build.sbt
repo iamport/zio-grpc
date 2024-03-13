@@ -18,8 +18,8 @@ val commonPublishSettings = Seq(
     Credentials(
       "GitHub Package Registry",
       "maven.pkg.github.com",
-      scala.sys.env("GITHUB_ACTOR"),
-      scala.sys.env("GITHUB_TOKEN")
+      scala.sys.env.get("PACKAGE_GITHUB_TOKEN").fold(scala.sys.env("CHAI_GPR_USERNAME"))(_ => "iamport-github"),
+      scala.sys.env.getOrElse("PACKAGE_GITHUB_TOKEN", scala.sys.env("CHAI_GPR_TOKEN"))
     )
   ),
   publishTo := Some(

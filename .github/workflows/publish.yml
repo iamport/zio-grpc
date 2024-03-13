@@ -6,6 +6,9 @@ on:
       - 'v*'
   workflow_dispatch:
 
+env:
+  PACKAGE_GITHUB_TOKEN: ${{ secrets.IAMPORT_COMMON }}
+
 jobs:
   publish:
     name: Build and Publish
