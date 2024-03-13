@@ -13,14 +13,27 @@ ThisBuild / resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 
 ThisBuild / versionScheme := Some("early-semver")
 
-publish / skip := true
+val commonPublishSettings = Seq(
+  credentials ++= Seq(
+    Credentials(
+      "GitHub Package Registry",
+      "maven.pkg.github.com",
+      scala.sys.env.getOrElse("GITHUB_ACTOR", ""),
+      scala.sys.env.getOrElse("GITHUB_TOKEN", "")
+    )
+  ),
+  publishTo := Some(
+    "GitHub Package Registry (portone-io/zio-grpc)" at "https://maven.pkg.github.com/portone-io/zio-grpc"
+  ),
+  resolvers += "GitHub Package Registry (portone-io/zio-grpc)" at "https://maven.pkg.github.com/portone-io/zio-grpc"
+)
 
-sonatypeProfileName := "com.thesamet"
+publish / skip := true
 
 inThisBuild(
   List(
     organization := "com.thesamet.scalapb.zio-grpc",
-    homepage     := Some(url("https://github.com/scalapb/zio-grpc")),
+    homepage     := Some(url("https://github.com/portone-io/zio-grpc")),
     licenses     := List(
       "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")
     ),
@@ -48,6 +61,7 @@ lazy val core = projectMatrix
       "dev.zio" %%% "zio-test-sbt" % Version.zio % "test"
     )
   )
+  .settings(commonPublishSettings)
   .jvmPlatform(
     ScalaVersions,
     Seq(
@@ -83,6 +97,7 @@ lazy val codeGen = projectMatrix
       "com.thesamet.scalapb" %% "compilerplugin" % scalapb.compiler.Version.scalapbVersion
     )
   )
+  .settings(commonPublishSettings)
   .jvmPlatform(scalaVersions = ScalaVersions)
 
 lazy val codeGenJVM212 = codeGen.jvm(Scala212)
@@ -98,6 +113,7 @@ lazy val protocGenZio = protocGenProject("protoc-gen-zio", codeGenJVM212)
         (assembly / assemblyMergeStrategy).value.apply(x)
     }
   )
+  .settings(commonPublishSettings)
 
 lazy val e2eProtos =
   projectMatrix
