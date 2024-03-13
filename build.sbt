@@ -18,14 +18,14 @@ val commonPublishSettings = Seq(
     Credentials(
       "GitHub Package Registry",
       "maven.pkg.github.com",
-      scala.sys.env.get("PACKAGE_GITHUB_TOKEN").fold(scala.sys.env("CHAI_GPR_USERNAME"))(_ => "iamport-github"),
-      scala.sys.env.getOrElse("PACKAGE_GITHUB_TOKEN", scala.sys.env("CHAI_GPR_TOKEN"))
+      scala.sys.env.getOrElse("GITHUB_ACTOR", ""),
+      scala.sys.env.getOrElse("GITHUB_TOKEN", "")
     )
   ),
   publishTo := Some(
-    "GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc"
+    "GitHub Package Registry (portone-io/zio-grpc)" at "https://maven.pkg.github.com/portone-io/zio-grpc"
   ),
-  resolvers += "GitHub Package Registry (iamport/zio-grpc)" at "https://maven.pkg.github.com/iamport/zio-grpc"
+  resolvers += "GitHub Package Registry (portone-io/zio-grpc)" at "https://maven.pkg.github.com/portone-io/zio-grpc"
 )
 
 publish / skip := true
@@ -33,7 +33,7 @@ publish / skip := true
 inThisBuild(
   List(
     organization := "com.thesamet.scalapb.zio-grpc",
-    homepage     := Some(url("https://github.com/portne/zio-grpc")),
+    homepage     := Some(url("https://github.com/portone-io/zio-grpc")),
     licenses     := List(
       "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")
     ),
